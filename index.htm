@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FFR – Aqua Aero with Full Mouse + Keyboard Lock</title>
+<style>
+/* Ensure full height and width */
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 200%;
+    width: 100%;
+}
+
+/* Body with full-page linear gradient */
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: linear-gradient(to bottom, #ccefff 0%, #99d9ff 50%, #66c2ff 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    font-size: 54px;
+    font-weight: bold;
+    color: #ffffff;
+    padding: 22px 0;
+    background: linear-gradient(to bottom, #a0dfff 0%, #4db8ff 50%, #1a90ff 100%);
+    border-bottom: 2px solid rgba(255,255,255,0.5);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 8px rgba(255,255,255,0.5);
+    text-shadow: 0 0 6px rgba(255,255,255,0.8), 0 0 14px rgba(180,220,255,0.8);
+}
+
+/* Sidebar */
+.sidebar {
+    position: absolute;
+    left: 0;
+    top: 120px;
+    width: 230px;
+    height: calc(100vh - 5px);
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(18px) saturate(180%);
+    border-right: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 2px 0 15px rgba(0,0,0,0.25), inset -2px 0 12px rgba(255,255,255,0.2);
+    padding: 20px;
+    border-radius: 0 20px 20px 0;
+}
+
+.fake-textbox {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.1), 0 0 6px rgba(255,255,255,0.7);
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #fff;
+    background: linear-gradient(to bottom, #80d8ff 0%, #33b0ff 50%, #1a90ff 100%);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 5px rgba(255,255,255,0.6);
+    transition: 0.2s ease-in-out;
+}
+.sidebar button:hover { filter: brightness(1.2); }
+
+/* Pages */
+.page {
+    position: absolute;
+    top: 120px;
+    left: 260px;
+    right: 0;
+    padding-top: 40px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.page.active { opacity:1; pointer-events:auto; transform:translateY(0px); }
+
+/* Glass Cards */
+.glass-card {
+    display: inline-block;
+    width: 380px;
+    padding: 22px;
+    margin: 18px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.6);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25), inset 0 0 20px rgba(255,255,255,0.4);
+    position: relative;
+}
+.glass-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    border-radius: 22px 22px 0 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0.3), rgba(255,255,255,0));
+    pointer-events: none;
+}
+
+.game-title, .game-rec-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #007aff;
+    margin-bottom: 14px;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8), 0 0 6px rgba(0,180,255,0.6);
+}
+.game-thumb {
+    width: 100%;
+    height: 190px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.35);
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.2), 0 0 10px rgba(255,255,255,0.6);
+    margin-bottom: 12px;
+}
+.game-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.game-desc { font-size:16px; color:#005bb5; text-shadow:0 1px 2px rgba(255,255,255,0.7); }
+
+.clickable { cursor:pointer; transition:0.2s ease; }
+.clickable:hover { transform: scale(1.05); }
+
+/* Game Overlay */
+#gameOverlay {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(12px);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+#gameOverlay .container {
+    width: 80%;
+    max-width: 960px;
+    background: rgba(255,255,255,0.3);
+    backdrop-filter: blur(25px) saturate(180%);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3), inset 0 0 20px rgba(255,255,255,0.35);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position: relative;
+}
+#gameOverlay .overlay-buttons {
+    width: 100%;
+    display:flex;
+    justify-content:flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* Retro Mac Shiny Buttons */
+#gameOverlay .overlay-buttons button {
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: 
+        inset 0 2px 4px rgba(255,255,255,0.6),
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 3px 6px rgba(0,0,0,0.25);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+#gameOverlay .overlay-buttons button:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+    box-shadow: 
+        inset 0 2px 6px rgba(255,255,255,0.8), 
+        inset 0 -2px 6px rgba(0,0,0,0.25), 
+        0 5px 10px rgba(0,0,0,0.3);
+}
+#gameOverlay .overlay-buttons button:active {
+    transform: translateY(1px);
+    box-shadow: 
+        inset 0 1px 2px rgba(0,0,0,0.3),
+        inset 0 -1px 2px rgba(255,255,255,0.5),
+        0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Colors for Buttons */
+#closeBtn {
+    background: linear-gradient(to bottom, #ff5e57 0%, #ff3b30 50%, #ff1a1a 100%);
+}
+#pointLockBtn {
+    background: linear-gradient(to bottom, #33b0ff 0%, #007aff 50%, #0057cc 100%);
+}
+
+#gameOverlay iframe {
+    width:100%;
+    aspect-ratio:16/9;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.6);
+}
+</style>
+</head>
+<body>
+
+<div class="header">FFR</div>
+
+<div class="sidebar">
+    <div class="fake-textbox">Sidebar text here</div>
+    <button onclick="showPage('homePage')">Home</button>
+    <button onclick="showPage('gamesPage')">Games</button>
+</div>
+
+<!-- Home Page -->
+<div id="homePage" class="page active">
+    <div class="main-text" style="font-size:22px;color:#007aff;text-shadow:0 1px 2px white;">
+        Free From Restriction
+        </div>
+    <div class="glass-card clickable" onclick="openGame('https://heads-mugs-microwavegt.vercel.app/')">
+        <div class="game-rec-title"> Game Recommendation</div>
+        <div class="game-thumb">
+            <img src="cuphead.png" alt="Cuphead Thumbnail">
+        </div>
+        <div class="game-desc">cup with head = :D</div>
+    </div>
+    <div class="glass-card clickable" onclick="openGame('https://fnaf2-microwavegt.vercel.app/')">
+        <div class="game-rec-title"> Another Game Recommendation</div>
+        <div class="game-thumb">
+            <img src="FNAF2.png" alt="FNAF2 Thumbnail">
+        </div>
+        <div class="game-desc">Jump scares await!</div>
+    </div>
+</div>
+
+<!-- Games Page -->
+<div id="gamesPage" class="page">
+    <h2 style="color:#007aff;text-shadow:0 1px 4px rgba(255,255,255,0.8);margin-bottom:20px;">Choose a Game</h2>
+
+    <div class="glass-card clickable" onclick="openGame('https://heads-mugs-microwavegt.vercel.app/')">
+        <div class="game-title">cuphead don't deal with the devil</div>
+        <div class="game-thumb">
+            <img src="cuphead.png" alt="Cuphead Thumbnail">
+        </div>
+        <div class="game-desc">cup with head = :D</div>
+    </div>
+
+    <div class="glass-card clickable" onclick="openGame('https://fnaf2-microwavegt.vercel.app/')">
+        <div class="game-title">Five Nights At Freddys 2</div>
+        <div class="game-thumb">
+            <img src="FNAF2.png" alt="FNAF2 Thumbnail">
+        </div>
+        <div class="game-desc">Survive the night with Freddy!</div>
+    </div>
+
+    <div class="glass-card clickable" onclick="openGame('https://minecraft-microwavegt.vercel.app/')">
+        <div class="game-title">Minecraft</div>
+        <div class="game-thumb">
+            <img src="minecraft.png" alt="Minecraft Thumbnail">
+        </div>
+        <div class="game-desc">CHICKEN JOCKEY!!!</div>
+    </div>
+</div>
+
+<!-- Game Overlay -->
+<div id="gameOverlay">
+    <div class="container">
+        <div class="overlay-buttons">
+            <button id="closeBtn" onclick="closeGame()">X</button>
+            <button id="pointLockBtn" onclick="lockPointer()">Point Locker</button>
+        </div>
+        <iframe id="gameFrame" src="" tabindex="0"></iframe>
+    </div>
+</div>
+
+<script>
+let keyboardLocked = false;
+
+/* Page switching */
+function showPage(pageID){
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(pageID).classList.add("active");
+}
+
+/* Forward keyboard events to iframe */
+function forwardKey(e){
+    if(!keyboardLocked) return;
+    const iframe = document.getElementById('gameFrame');
+    if(iframe && iframe.contentWindow){
+        const eventCopy = new e.constructor(e.type, e);
+        iframe.contentWindow.dispatchEvent(eventCopy);
+        e.preventDefault();
+        e.stopPropagation();
+    }
+}
+
+/* Open game overlay */
+function openGame(url){
+    const iframe = document.getElementById('gameFrame');
+    iframe.src = url;
+    const overlay = document.getElementById('gameOverlay');
+    overlay.style.display = 'flex';
+    keyboardLocked = true;
+
+    setTimeout(()=>{ iframe.focus(); }, 100);
+
+    document.addEventListener('keydown', forwardKey, true);
+    document.addEventListener('keyup', forwardKey, true);
+}
+
+/* Close game overlay */
+function closeGame(){
+    const iframe = document.getElementById('gameFrame');
+    iframe.src = '';
+    document.getElementById('gameOverlay').style.display = 'none';
+    keyboardLocked = false;
+
+    document.removeEventListener('keydown', forwardKey, true);
+    document.removeEventListener('keyup', forwardKey, true);
+
+    document.body.focus();
+}
+
+/* Pointer lock button */
+function lockPointer(){
+    const iframe = document.getElementById('gameFrame');
+    if(!iframe) return;
+
+    iframe.focus();
+
+    if(iframe.requestPointerLock){
+        iframe.requestPointerLock();
+    } else if (iframe.contentWindow.document.body.requestPointerLock){
+        iframe.contentWindow.document.body.requestPointerLock();
+    } else {
+        alert("Pointer Lock not supported in this browser.");
+    }
+}
+</script>
+
+</body>
+</html>
