@@ -4,28 +4,21 @@
 <meta charset="UTF-8">
 <title>FFR – Aqua Aero with Full Mouse + Keyboard Lock</title>
 <style>
-/* Ensure full height and width */
+/* ---------- General ---------- */
 html, body {
     margin: 0;
     padding: 0;
-    min-height: 200%;
     width: 100%;
-}
-
-/* Body with full-page linear gradient */
-body {
+    min-height: 100vh;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     background: linear-gradient(to bottom, #ccefff 0%, #99d9ff 50%, #66c2ff 100%);
-    min-height: 100vh;
     overflow-x: hidden;
 }
-
-/* Header */
 .header {
     text-align: center;
     font-size: 54px;
     font-weight: bold;
-    color: #ffffff;
+    color: #fff;
     padding: 22px 0;
     background: linear-gradient(to bottom, #a0dfff 0%, #4db8ff 50%, #1a90ff 100%);
     border-bottom: 2px solid rgba(255,255,255,0.5);
@@ -33,12 +26,10 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 8px rgba(255,255,255,0.5);
     text-shadow: 0 0 6px rgba(255,255,255,0.8), 0 0 14px rgba(180,220,255,0.8);
 }
-
-/* Sidebar */
 .sidebar {
     position: absolute;
-    left: 0;
     top: 120px;
+    left: 0;
     width: 230px;
     height: calc(100vh - 5px);
     background: rgba(255,255,255,0.25);
@@ -48,7 +39,6 @@ body {
     padding: 20px;
     border-radius: 0 20px 20px 0;
 }
-
 .fake-textbox {
     width: 100%;
     padding: 10px;
@@ -58,7 +48,6 @@ body {
     border: 1px solid rgba(255,255,255,0.8);
     box-shadow: inset 0 0 8px rgba(0,0,0,0.1), 0 0 6px rgba(255,255,255,0.7);
 }
-
 .sidebar button {
     width: 100%;
     padding: 12px;
@@ -113,7 +102,6 @@ body {
     background: linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0.3), rgba(255,255,255,0));
     pointer-events: none;
 }
-
 .game-title, .game-rec-title {
     font-size: 22px;
     font-weight: bold;
@@ -133,11 +121,10 @@ body {
 }
 .game-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .game-desc { font-size:16px; color:#005bb5; text-shadow:0 1px 2px rgba(255,255,255,0.7); }
-
 .clickable { cursor:pointer; transition:0.2s ease; }
 .clickable:hover { transform: scale(1.05); }
 
-/* Game Overlay */
+/* ---------- Game Overlay ---------- */
 #gameOverlay {
     position: fixed;
     top:0; left:0; right:0; bottom:0;
@@ -161,6 +148,8 @@ body {
     align-items:center;
     position: relative;
 }
+
+/* ---------- Aero Buttons ---------- */
 #gameOverlay .overlay-buttons {
     width: 100%;
     display:flex;
@@ -168,110 +157,118 @@ body {
     gap: 10px;
     margin-bottom: 10px;
 }
-
-/* Retro Mac Shiny Buttons */
 #gameOverlay .overlay-buttons button {
     font-weight: bold;
     padding: 10px 16px;
     border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.8);
-    box-shadow: 
-        inset 0 2px 4px rgba(255,255,255,0.6),
-        inset 0 -2px 4px rgba(0,0,0,0.2),
-        0 3px 6px rgba(0,0,0,0.25);
+    cursor: pointer;
     color: #fff;
     text-shadow: 0 1px 2px rgba(255,255,255,0.6);
-    cursor: pointer;
-    transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.15s ease, filter 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.75);
+    box-shadow:
+        inset 0 1px 3px rgba(255,255,255,0.7),
+        inset 0 -1px 4px rgba(0,0,0,0.25),
+        0 3px 8px rgba(0,0,0,0.30);
 }
 #gameOverlay .overlay-buttons button:hover {
     filter: brightness(1.2);
     transform: translateY(-1px);
-    box-shadow: 
-        inset 0 2px 6px rgba(255,255,255,0.8), 
-        inset 0 -2px 6px rgba(0,0,0,0.25), 
-        0 5px 10px rgba(0,0,0,0.3);
 }
-#gameOverlay .overlay-buttons button:active {
-    transform: translateY(1px);
-    box-shadow: 
-        inset 0 1px 2px rgba(0,0,0,0.3),
-        inset 0 -1px 2px rgba(255,255,255,0.5),
-        0 2px 4px rgba(0,0,0,0.2);
+#gameOverlay .overlay-buttons button::before {
+    content: "";
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:45%;
+    background:linear-gradient(to bottom, rgba(255,255,255,0.85), rgba(255,255,255,0.25));
+    border-radius:12px 12px 0 0;
+    pointer-events:none;
 }
+#gameOverlay .overlay-buttons button::after {
+    content:"";
+    position:absolute;
+    top:10%; right:-30%;
+    width:60%; height:80%;
+    background:radial-gradient(circle, rgba(255,255,255,0.4), rgba(255,255,255,0) 70%);
+    transform:rotate(18deg);
+    pointer-events:none;
+}
+/* Individual button colors */
+#closeBtn { background:linear-gradient(to bottom, rgba(255,120,120,0.55), rgba(255,50,50,0.40) 55%, rgba(200,20,20,0.45)); }
+#pointLockBtn { background:linear-gradient(to bottom, rgba(120,180,255,0.55), rgba(60,130,255,0.40) 55%, rgba(30,80,200,0.45)); }
+#popoutBtn { background:linear-gradient(to bottom, rgba(120,255,120,0.55), rgba(40,200,40,0.35) 55%, rgba(20,140,20,0.45)); }
+#fullscreenBtn { background:linear-gradient(to bottom, rgba(180,120,255,0.55), rgba(130,60,220,0.40) 55%, rgba(90,30,160,0.45)); }
 
-/* Colors for Buttons */
-#closeBtn {
-    background: linear-gradient(to bottom, #ff5e57 0%, #ff3b30 50%, #ff1a1a 100%);
+/* ---------- Fullscreen Container & Message ---------- */
+#fullscreenContainer {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 56.25%; /* 16:9 ratio */
 }
-#pointLockBtn {
-    background: linear-gradient(to bottom, #33b0ff 0%, #007aff 50%, #0057cc 100%);
+#fullscreenContainer iframe {
+    position: absolute;
+    top:0; left:0; width:100%; height:100%; border-radius:12px; border:1px solid rgba(255,255,255,0.6);
 }
-
-#gameOverlay iframe {
-    width:100%;
-    aspect-ratio:16/9;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,0.6);
+#fullscreenMessage {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 28px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 110%;
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 2;
+    pointer-events: none;
 }
 </style>
 </head>
 <body>
 
 <div class="header">FFR</div>
-
 <div class="sidebar">
     <div class="fake-textbox">Sidebar text here</div>
     <button onclick="showPage('homePage')">Home</button>
     <button onclick="showPage('gamesPage')">Games</button>
 </div>
 
-<!-- Home Page -->
+<!-- Pages -->
 <div id="homePage" class="page active">
-    <div class="main-text" style="font-size:22px;color:#007aff;text-shadow:0 1px 2px white;">
-        Free From Restriction
-        </div>
+    <div class="main-text" style="font-size:22px;color:#007aff;text-shadow:0 1px 2px white;">Free From Restriction</div>
     <div class="glass-card clickable" onclick="openGame('https://heads-mugs-microwavegt.vercel.app/')">
-        <div class="game-rec-title"> Game Recommendation</div>
-        <div class="game-thumb">
-            <img src="cuphead.png" alt="Cuphead Thumbnail">
-        </div>
+        <div class="game-rec-title">Game Recommendation</div>
+        <div class="game-thumb"><img src="cuphead.png" alt="Cuphead"></div>
         <div class="game-desc">cup with head = :D</div>
     </div>
     <div class="glass-card clickable" onclick="openGame('https://fnaf2-microwavegt.vercel.app/')">
-        <div class="game-rec-title"> Another Game Recommendation</div>
-        <div class="game-thumb">
-            <img src="FNAF2.png" alt="FNAF2 Thumbnail">
-        </div>
+        <div class="game-rec-title">Another Game Recommendation</div>
+        <div class="game-thumb"><img src="FNAF2.png" alt="FNAF2"></div>
         <div class="game-desc">Jump scares await!</div>
     </div>
 </div>
 
-<!-- Games Page -->
 <div id="gamesPage" class="page">
     <h2 style="color:#007aff;text-shadow:0 1px 4px rgba(255,255,255,0.8);margin-bottom:20px;">Choose a Game</h2>
-
     <div class="glass-card clickable" onclick="openGame('https://heads-mugs-microwavegt.vercel.app/')">
         <div class="game-title">cuphead don't deal with the devil</div>
-        <div class="game-thumb">
-            <img src="cuphead.png" alt="Cuphead Thumbnail">
-        </div>
+        <div class="game-thumb"><img src="cuphead.png" alt="Cuphead"></div>
         <div class="game-desc">cup with head = :D</div>
     </div>
-
     <div class="glass-card clickable" onclick="openGame('https://fnaf2-microwavegt.vercel.app/')">
         <div class="game-title">Five Nights At Freddys 2</div>
-        <div class="game-thumb">
-            <img src="FNAF2.png" alt="FNAF2 Thumbnail">
-        </div>
+        <div class="game-thumb"><img src="FNAF2.png" alt="FNAF2"></div>
         <div class="game-desc">Survive the night with Freddy!</div>
     </div>
-
     <div class="glass-card clickable" onclick="openGame('https://minecraft-microwavegt.vercel.app/')">
         <div class="game-title">Minecraft</div>
-        <div class="game-thumb">
-            <img src="Minecraft.png" alt="Minecraft Thumbnail">
-        </div>
+        <div class="game-thumb"><img src="Minecraft.png" alt="Minecraft"></div>
         <div class="game-desc">CHICKEN JOCKEY!!!</div>
     </div>
 </div>
@@ -282,8 +279,13 @@ body {
         <div class="overlay-buttons">
             <button id="closeBtn" onclick="closeGame()">X</button>
             <button id="pointLockBtn" onclick="lockPointer()">Point Locker</button>
+            <button id="popoutBtn" onclick="popoutGame()">Unblock</button>
+            <button id="fullscreenBtn" onclick="fullscreenGame()">Fullscreen</button>
         </div>
-        <iframe id="gameFrame" src="" tabindex="0"></iframe>
+        <div id="fullscreenContainer">
+            <iframe id="gameFrame" src="" tabindex="0"></iframe>
+            <div id="fullscreenMessage">Press Tab or Ctrl to pull up options</div>
+        </div>
     </div>
 </div>
 
@@ -315,9 +317,7 @@ function openGame(url){
     const overlay = document.getElementById('gameOverlay');
     overlay.style.display = 'flex';
     keyboardLocked = true;
-
     setTimeout(()=>{ iframe.focus(); }, 100);
-
     document.addEventListener('keydown', forwardKey, true);
     document.addEventListener('keyup', forwardKey, true);
 }
@@ -328,10 +328,8 @@ function closeGame(){
     iframe.src = '';
     document.getElementById('gameOverlay').style.display = 'none';
     keyboardLocked = false;
-
     document.removeEventListener('keydown', forwardKey, true);
     document.removeEventListener('keyup', forwardKey, true);
-
     document.body.focus();
 }
 
@@ -339,19 +337,54 @@ function closeGame(){
 function lockPointer(){
     const iframe = document.getElementById('gameFrame');
     if(!iframe) return;
-
     iframe.focus();
-
     if(iframe.requestPointerLock){
         iframe.requestPointerLock();
     } else if (iframe.contentWindow.document.body.requestPointerLock){
         iframe.contentWindow.document.body.requestPointerLock();
     } else {
-        alert("Pointer Lock not supported in this browser.");
+        alert("Pointer Lock not supported.");
     }
+}
+
+/* Pop out into about:blank tab */
+function popoutGame(){
+    const iframe = document.getElementById("gameFrame");
+    if (!iframe || !iframe.src) return;
+    const win = window.open("about:blank", "_blank");
+    win.document.write(`
+        <html>
+            <head><title>application run</title></head>
+            <body style="margin:0;overflow:hidden;background:#000;">
+                <iframe src="${iframe.src}" style="border:none;width:100vw;height:100vh;"></iframe>
+            </body>
+        </html>
+    `);
+    win.document.close();
+}
+
+/* Fullscreen with message */
+function fullscreenGame(){
+    const container = document.getElementById("fullscreenContainer");
+    const message = document.getElementById("fullscreenMessage");
+
+    // Show message briefly
+    message.style.opacity = "1";
+    setTimeout(()=>{ message.style.opacity = "0"; }, 4000);
+
+    // Fullscreen the container, not just iframe
+    if(container.requestFullscreen){
+        container.requestFullscreen();
+    } else if(container.webkitRequestFullscreen){
+        container.webkitRequestFullscreen();
+    } else if(container.msRequestFullscreen){
+        container.msRequestFullscreen();
+    }
+
+    // Enable point locker automatically
+    lockPointer();
 }
 </script>
 
 </body>
 </html>
-
